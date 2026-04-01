@@ -18,6 +18,28 @@ This project is intentionally pragmatic:
 
 The current goal is simple, reliable, subtitle-driven dubbing with a small voice set, resumable processing, and a selectable target dubbing language.
 
+## Why It Exists
+
+Most "AI dubbing" projects are either:
+- demo-only
+- tightly coupled to one language
+- hard to resume after failure
+- unclear about their real input/output contract
+
+This project is trying to be the opposite:
+- subtitle-first
+- resumable
+- practical
+- simple enough to inspect and extend
+
+## Current Value Proposition
+
+- `video + subtitles -> dubbing-ready JSON`
+- progressive dubbing instead of all-or-nothing rendering
+- resumable processing for long episodes
+- small voice model that is practical rather than theatrical
+- target-language-aware architecture
+
 ## What This Project Does
 
 - finds matching subtitles for a video
@@ -206,6 +228,19 @@ If you only want the structured dubbing artifacts, run the analysis step through
 
 The key product of this repository is the generated JSON contract, not only the GUI.
 
+## Current Scope
+
+What this project is:
+- a practical dubbing microsystem
+- a subtitle-driven segmentation and rendering pipeline
+- a structured JSON generator for downstream dubbing workflows
+
+What this project is not:
+- a lip-sync engine
+- a full professional localization suite
+- a guarantee of perfect character identity tracking
+- a one-click cinematic dubbing replacement for human post-production
+
 ## Language Model
 
 The engine is target-language aware.
@@ -257,6 +292,8 @@ Most important state fields:
 ## Additional Documentation
 
 - [README_DUBBING.md](README_DUBBING.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [ROADMAP.md](ROADMAP.md)
 - [docs/dubbing_model.md](docs/dubbing_model.md)
 - [docs/quickstart.md](docs/quickstart.md)
 - [SUPPORT.md](SUPPORT.md)
