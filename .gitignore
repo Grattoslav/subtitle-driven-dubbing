@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local secrets
+.hf_token
+.groq_key
+.gemini_key
+.env
+.env.*
+
+# Logs
+*.log
+
+# Local caches and checkpoints
+model_checkpoints/
+temp_audio/
+
+# Generated dubbing artifacts
+*_dub_assets/
+*.dubbing_prep.json
+*.dubbing_segments.json
+*.dubbing_job_state.json
+*.voice_map.json
+*_dubbed.mp4
+*_preview.mp4
+*preview*.wav
+*TEMP_MPY_*.mp4
+
+# User media folder
+stazene/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
