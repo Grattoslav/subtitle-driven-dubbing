@@ -32,6 +32,11 @@ Currently supported voice registries:
 - `sk`
 - `en`
 
+Credentials:
+- if a model backend needs access credentials, provide your own
+- this repository does not ship public reusable private keys or tokens
+- keep local secrets out of git
+
 ## 3. Launch the GUI
 
 ```powershell
@@ -55,7 +60,7 @@ The GUI should:
 Important:
 - the selected `DUBBING_TARGET_LANGUAGE` controls TTS voice selection
 - it does not automatically translate subtitle text
-- for cross-language dubbing you still need subtitle text in the desired target language
+- the expected input is a subtitle file already written in the desired dubbing language
 
 ## 5. Resume after interruption
 
@@ -76,6 +81,20 @@ After analysis you should see:
 
 During dubbing you should see:
 - `VIDEO_dub_assets/`
+
+## Engine-first usage
+
+You do not have to use the built-in GUI.
+
+The core reusable contract is:
+- input: `video + target-language subtitles`
+- output: `dubbing_prep.json`, `dubbing_segments.json`, `voice_map.json`, `dubbing_job_state.json`
+
+This lets you build your own:
+- player
+- queue runner
+- web UI
+- integration layer
 
 ## Troubleshooting
 

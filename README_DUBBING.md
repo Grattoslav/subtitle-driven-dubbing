@@ -2,8 +2,13 @@
 
 This repository contains a working pipeline for simple AI dubbing of movies and TV episodes.
 
+It is meant to be reusable by other developers:
+- the repository does not include your private keys or tokens
+- each adopter brings their own credentials
+- the engine can be embedded into another player or UI
+
 The goal is to:
-- take a video file plus subtitles
+  - take a video file plus subtitles already written in the target dubbing language
 - estimate who is speaking and when
 - assign a simple male or female dubbing voice
 - generate dubbed speech in a selected target language
@@ -81,8 +86,14 @@ Responsibilities:
 ## Inputs
 
 Recommended minimum input:
-- a video file, for example `.mp4`
-- a matching `.srt` file in the same folder
+  - a video file, for example `.mp4`
+  - a matching `.srt` file in the same folder
+  - subtitle text already written in the language you want the dubbing to speak
+
+Credential expectation:
+  - provide your own Hugging Face token if your model access requires it
+  - provide your own TTS or model credentials if you swap backends
+  - do not expect this repository to contain reusable private credentials
 
 Optional:
 - set the dubbing target language using `DUBBING_TARGET_LANGUAGE`
@@ -159,6 +170,11 @@ This is a practical automated dubbing system, not a final production pipeline.
 5. Let dubbing continue automatically.
 6. Test the progressive dubbed output.
 7. If the app crashes, relaunch and resume.
+
+Alternative integration model:
+1. Generate `dubbing_segments.json`.
+2. Read `voice_map.json` and `dubbing_job_state.json`.
+3. Plug your own player, queue, or UI on top of the generated JSON contract.
 
 ## Debugging
 

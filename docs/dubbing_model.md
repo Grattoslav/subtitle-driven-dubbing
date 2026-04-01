@@ -14,12 +14,17 @@ We want to automatically create simple dubbing for movies and TV episodes so tha
 
 The intended user flow is:
 - choose a video
-- if subtitles exist, use them
+- if subtitles exist, use them as the dubbing text source
 - run analysis automatically
 - start dubbing automatically
 - allow playback once the beginning is ready
 - continue rendering in the background
 - save a final complete output when done
+
+Core input contract:
+- the video can be in any spoken language
+- the subtitle file should already be written in the target dubbing language
+- subtitle translation is upstream of this engine, not part of the core runtime contract
 
 ## Technical Model
 
@@ -112,4 +117,3 @@ When evaluating future changes, use this filter:
 5. Does this improve robustness more than it just looks clever?
 
 If not, it is probably not a priority.
-
