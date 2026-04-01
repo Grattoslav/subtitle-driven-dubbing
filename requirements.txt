@@ -1,0 +1,12 @@
+numpy
+scipy
+torch
+torchaudio
+transformers
+speechbrain
+pyannote.audio
+moviepy
+pydub
+edge-tts
+PyQt6
+

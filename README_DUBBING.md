@@ -6,7 +6,7 @@ The goal is to:
 - take a video file plus subtitles
 - estimate who is speaking and when
 - assign a simple male or female dubbing voice
-- generate Czech dubbed speech
+- generate dubbed speech in a selected target language
 - start playback from the beginning before the full episode is finished
 - resume after crashes without starting over
 
@@ -20,7 +20,7 @@ This system has already been exercised end-to-end on a long TV episode with:
 - `.srt` subtitles
 - subtitle-driven analysis
 - speaker diarization
-- Czech TTS
+- target-language-aware TTS
 - resumable job state
 - progressively playable output
 
@@ -84,6 +84,9 @@ Recommended minimum input:
 - a video file, for example `.mp4`
 - a matching `.srt` file in the same folder
 
+Optional:
+- set the dubbing target language using `DUBBING_TARGET_LANGUAGE`
+
 Subtitle matching strategy:
 - exact same base filename
 - underscore/space variants
@@ -113,9 +116,12 @@ The system creates files next to the video:
 
 ## Current Voice Strategy
 
-The current setup uses only 2 Czech voices:
-- `cs-CZ-AntoninNeural`
-- `cs-CZ-VlastaNeural`
+The current setup uses a small voice set per target language.
+
+Current built-in target languages:
+- `cs`
+- `sk`
+- `en`
 
 Child-like voices are approximated using pitch offset.
 
@@ -132,6 +138,7 @@ The goal is:
 - continue rendering in the background
 - resume after crashes from `dubbing_job_state.json`
 - use subtitles as the primary text source
+- carry `target_language` in the generated dubbing metadata
 
 ## Known Limits
 
@@ -139,6 +146,7 @@ The goal is:
 - soundtrack mixing still needs tuning
 - no lip-sync
 - not intended as a studio-grade voice identity system
+- no built-in subtitle translation step yet
 
 This is a practical automated dubbing system, not a final production pipeline.
 
@@ -176,7 +184,7 @@ Most important state fields:
 ## Support
 
 If you publish this project and want people to support your work, add your real funding links in:
-- [SUPPORT.md](C:\Users\Asus\Desktop\dabing\SUPPORT.md)
+- [SUPPORT.md](SUPPORT.md)
 - the funding section below
 
 Suggested donation platforms:
@@ -203,4 +211,3 @@ The most sensible next steps are:
 - keep improving soundtrack mixing under dubbed speech
 - show a clear `ready until mm:ss` status
 - validate the workflow on multiple unrelated videos, not just a single sample
-

@@ -11,9 +11,21 @@ from pydub import AudioSegment
 
 
 DEFAULT_EDGE_VOICES = {
-    "caption_narrator": "cs-CZ-AntoninNeural",
-    "male_cz": "cs-CZ-AntoninNeural",
-    "female_cz": "cs-CZ-VlastaNeural",
+    "cs": {
+        "caption_cs": "cs-CZ-AntoninNeural",
+        "male_cs": "cs-CZ-AntoninNeural",
+        "female_cs": "cs-CZ-VlastaNeural",
+    },
+    "sk": {
+        "caption_sk": "sk-SK-LukasNeural",
+        "male_sk": "sk-SK-LukasNeural",
+        "female_sk": "sk-SK-ViktoriaNeural",
+    },
+    "en": {
+        "caption_en": "en-US-GuyNeural",
+        "male_en": "en-US-GuyNeural",
+        "female_en": "en-US-JennyNeural",
+    },
 }
 
 
@@ -42,6 +54,11 @@ class DubbingRunner:
         self.segment_payload = load_json(self.segments_path)
         self.voice_map_payload = load_json(self.voice_map_path)
         self.job_state = load_json(self.job_state_path)
+        self.target_language = (
+            self.voice_map_payload.get("target_language")
+            or self.segment_payload.get("target_language")
+            or "cs"
+        ).strip().lower()
         self.segments = self.segment_payload["segments"]
         self.voice_entries = self.voice_map_payload["voices"]
         self.voice_lookup = {}
@@ -73,16 +90,20 @@ class DubbingRunner:
         return ducked
 
     def _prepare_voice_map(self):
+        language_voices = DEFAULT_EDGE_VOICES.get(
+            self.target_language,
+            DEFAULT_EDGE_VOICES["cs"],
+        )
         for entry in self.voice_entries:
             if not entry.get("tts_engine"):
                 entry["tts_engine"] = "edge_tts"
-            if entry["voice_id"] in DEFAULT_EDGE_VOICES:
-                entry["tts_voice"] = DEFAULT_EDGE_VOICES.get(
+            if entry["voice_id"] in language_voices:
+                entry["tts_voice"] = language_voices.get(
                     entry["voice_id"],
-                    "cs-CZ-AntoninNeural",
+                    next(iter(language_voices.values())),
                 )
             elif not entry.get("tts_voice"):
-                entry["tts_voice"] = "cs-CZ-AntoninNeural"
+                entry["tts_voice"] = next(iter(language_voices.values()))
             self.voice_lookup[entry["voice_id"]] = entry
         save_json(self.voice_map_path, self.voice_map_payload)
 
@@ -197,7 +218,7 @@ class DubbingRunner:
 
     async def _synthesize_segment(self, segment, voice_name, output_path):
         communicate = edge_tts.Communicate(
-            segment["text_cs"],
+            segment.get("text_target") or segment.get("text") or segment.get("text_cs") or "",
             voice_name,
             pitch=segment["dub"].get("tts_pitch", "+0Hz"),
         )
@@ -233,7 +254,8 @@ class DubbingRunner:
 
     def _synthesize_with_retry(self, segment, voice_name, output_path, retries=4):
         last_error = None
-        chunks = self._split_tts_text(segment["text_cs"])
+        tts_text = segment.get("text_target") or segment.get("text") or segment.get("text_cs") or ""
+        chunks = self._split_tts_text(tts_text)
         temp_files = []
         try:
             for chunk_index, chunk_text in enumerate(chunks):

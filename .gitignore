@@ -8,6 +8,7 @@ __pycache__/
 .hf_token
 .groq_key
 .gemini_key
+.git_key
 .env
 .env.*
 
@@ -37,4 +38,4 @@ stazene/
 Thumbs.db
 .vscode/
 .idea/
-
+Nový Textový dokument.txt

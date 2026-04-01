@@ -43,6 +43,9 @@ def _normalize_path(path):
     return str(Path(path).resolve())
 
 
+DEFAULT_TARGET_LANGUAGE = os.environ.get("DUBBING_TARGET_LANGUAGE", "cs").strip().lower() or "cs"
+
+
 def _chunk_tensor(wav, chunk_len):
     for start in range(0, wav.shape[1], chunk_len):
         yield wav[:, start : start + chunk_len]
@@ -831,12 +834,12 @@ class DiarizationProcessor:
                 "pitch_hz"
             )
 
-    def build_dubbing_segments(self, results, source_mode):
+    def build_dubbing_segments(self, results, source_mode, target_language=DEFAULT_TARGET_LANGUAGE):
         segments = []
         dubbable_kinds = {"dialog", "on_screen_text"}
         for ordinal, item in enumerate(results, start=1):
-            text_cs = item.get("subtitle_cs") or item.get("text") or ""
-            is_dubbable = item.get("kind") in dubbable_kinds and bool(text_cs.strip())
+            text_value = item.get("subtitle_cs") or item.get("text") or ""
+            is_dubbable = item.get("kind") in dubbable_kinds and bool(text_value.strip())
             pitch_hz = item.get("pitch_hz")
             gender = item.get("gender", "unknown")
             child_like = False
@@ -859,8 +862,10 @@ class DiarizationProcessor:
                     "gender": gender,
                     "pitch_hz": pitch_hz,
                     "child_like": child_like,
+                    "target_language": target_language,
                     "kind": item.get("kind", "dialog"),
-                    "text_cs": text_cs,
+                    "text": text_value,
+                    "text_target": text_value,
                     "text_en": item.get("asr_en"),
                     "source_mode": source_mode,
                     "dub": {
@@ -875,7 +880,7 @@ class DiarizationProcessor:
             )
         return segments
 
-    def build_voice_map(self, segments):
+    def build_voice_map(self, segments, target_language=DEFAULT_TARGET_LANGUAGE):
         speaker_profiles = {}
         for segment in segments:
             speaker = segment["speaker"]
@@ -907,12 +912,13 @@ class DiarizationProcessor:
 
         for profile in ordered_profiles:
             gender = profile["gender"]
+            lang = target_language
             if profile["speaker"] == "caption":
-                voice_id = "caption_narrator"
+                voice_id = f"caption_{lang}"
             elif gender == "female":
-                voice_id = "female_cz"
+                voice_id = f"female_{lang}"
             else:
-                voice_id = "male_cz"
+                voice_id = f"male_{lang}"
 
             primary_kind = max(
                 profile["kind_counts"],
@@ -922,6 +928,7 @@ class DiarizationProcessor:
                 "speaker": profile["speaker"],
                 "speaker_slug": _slugify_speaker_id(profile["speaker"]),
                 "gender": gender,
+                "target_language": target_language,
                 "voice_id": voice_id,
                 "voice_role": "caption" if profile["speaker"] == "caption" or primary_kind == "on_screen_text" else "dialog",
                 "tts_engine": None,
@@ -1151,13 +1158,15 @@ class DiarizationProcessor:
         segments = self.build_dubbing_segments(
             results,
             "srt" if subtitle_path else "vad",
+            DEFAULT_TARGET_LANGUAGE,
         )
-        voice_map = self.build_voice_map(segments)
+        voice_map = self.build_voice_map(segments, DEFAULT_TARGET_LANGUAGE)
         job_state = self.build_job_state(video_path, segments)
         export_payload = {
             "video_path": _normalize_path(video_path),
             "subtitle_path": subtitle_path,
             "source_mode": "srt" if subtitle_path else "vad",
+            "target_language": DEFAULT_TARGET_LANGUAGE,
             "items": results,
         }
         export_path.write_text(
@@ -1172,6 +1181,7 @@ class DiarizationProcessor:
                 {
                     "video_path": _normalize_path(video_path),
                     "source_mode": export_payload["source_mode"],
+                    "target_language": DEFAULT_TARGET_LANGUAGE,
                     "segments": segments,
                 },
                 ensure_ascii=False,
@@ -1186,6 +1196,7 @@ class DiarizationProcessor:
             json.dumps(
                 {
                     "video_path": _normalize_path(video_path),
+                    "target_language": DEFAULT_TARGET_LANGUAGE,
                     "voices": voice_map,
                 },
                 ensure_ascii=False,
