@@ -378,7 +378,11 @@ class DiarizationProcessor:
 
         return results
 
-    def find_subtitle_path(self, video_path):
+    def find_subtitle_path(self, video_path, subtitle_path=None):
+        if subtitle_path:
+            explicit_path = Path(subtitle_path)
+            if explicit_path.exists():
+                return _normalize_path(explicit_path)
         video = Path(video_path)
         normalized_stem = re.sub(r"[\W_]+", "", video.stem).lower()
         candidates = [
@@ -1001,10 +1005,10 @@ class DiarizationProcessor:
         )[0]
         return text.strip()
 
-    def process_video(self, video_path):
+    def process_video(self, video_path, subtitle_path=None):
         """Yields subtitle-aligned or VAD-derived items for dubbing prep."""
         audio_path = self.extract_audio(video_path)
-        subtitle_path = self.find_subtitle_path(video_path)
+        subtitle_path = self.find_subtitle_path(video_path, subtitle_path=subtitle_path)
         
         # Load full audio for slicing
         signal, fs = torchaudio.load(audio_path)

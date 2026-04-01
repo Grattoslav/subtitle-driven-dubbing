@@ -1,5 +1,7 @@
 # Subtitle-Driven Dubbing
 
+A practical subtitle-driven dubbing engine for people who want to listen instead of reading subtitles.
+
 Subtitle-Driven Dubbing is a small dubbing microsystem that turns:
 
 - a video file
@@ -15,6 +17,7 @@ This project is intentionally pragmatic:
 - no lip-sync
 - no large cast simulation
 - no manual per-episode setup as the main workflow
+- no claim of studio-grade dubbing quality
 
 This repository is also intentionally credential-free:
 - no personal API keys
@@ -24,6 +27,21 @@ This repository is also intentionally credential-free:
 Anyone adopting the project is expected to provide their own credentials when a backend requires them.
 
 The current goal is simple, reliable, subtitle-driven dubbing with a small voice set, resumable processing, and a selectable target dubbing language.
+
+## What To Expect
+
+This project is meant to produce simple, usable automated dubbing.
+
+It is a good fit for:
+- people who do not want to read subtitles
+- practical accessibility and convenience workflows
+- fast experimentation with long-form dubbed playback
+
+It is not a good fit for:
+- theatrical dubbing quality
+- full character acting
+- perfect voice identity preservation
+- lip-synced production work
 
 ## Why It Exists
 
@@ -259,6 +277,7 @@ What this project is:
 - a practical dubbing microsystem
 - a subtitle-driven segmentation and rendering pipeline
 - a structured JSON generator for downstream dubbing workflows
+- a simple automated dubbing system that favors usability over realism
 
 What this project is not:
 - a lip-sync engine

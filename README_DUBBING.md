@@ -1,5 +1,7 @@
 # Dubbing System
 
+A simple automated dubbing pipeline for people who would rather listen than read subtitles.
+
 This repository contains a working pipeline for simple AI dubbing of movies and TV episodes.
 
 It is meant to be reusable by other developers:
@@ -9,14 +11,15 @@ It is meant to be reusable by other developers:
 
 The goal is to:
   - take a video file plus subtitles already written in the target dubbing language
-- estimate who is speaking and when
-- assign a simple male or female dubbing voice
-- generate dubbed speech in a selected target language
-- start playback from the beginning before the full episode is finished
-- resume after crashes without starting over
+  - estimate who is speaking and when
+  - assign a simple male or female dubbing voice
+  - generate dubbed speech in a selected target language
+  - start playback from the beginning before the full episode is finished
+  - resume after crashes without starting over
 
 This is not a lip-sync system.
-It is a practical, resumable dubbing workflow.
+It is not studio dubbing.
+It is a practical, resumable dubbing workflow designed to be good enough for comfortable watching without reading subtitles.
 
 ## Current Status
 
